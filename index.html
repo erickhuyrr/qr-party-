@@ -10,15 +10,27 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:16px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 main{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+.direct main{max-width:900px}
 h1{font-size:22px;margin:4px 0 2px}
 p.s{color:var(--mu);margin:0 0 18px;font-size:14px}
+.wrap{display:block}
+.direct .wrap{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start}
 .list{display:grid;gap:10px}
 .item{display:flex;justify-content:space-between;width:100%;padding:16px;background:var(--card);border:1px solid var(--bd);border-radius:12px;color:var(--tx);font-size:17px;font-weight:600;cursor:pointer;text-align:left}
-.item:hover{border-color:var(--ac)}
+.item:hover,.item.active{border-color:var(--ac)}
+.item.active{box-shadow:0 0 0 2px var(--ac) inset}
 .item span{color:var(--mu);font-weight:400;font-size:13px}
+.direct .item span{display:none}
 .empty{color:var(--mu);text-align:center;padding:28px 0}
+.side{display:none;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;text-align:center}
+.direct .side{display:block}
+#qv h3{margin:0 0 12px}
+#qv img{width:100%;max-width:340px;background:#fff;border-radius:10px}
+.direct #qv img{max-width:380px}
 .panel{margin-top:22px;padding:16px;background:var(--card);border:1px solid var(--bd);border-radius:12px;display:grid;gap:10px}
 .panel h2{margin:0;font-size:16px}
+.tg{display:flex;align-items:center;gap:10px;font-size:15px}
+.tg input{width:20px;height:20px}
 input[type=text]{padding:12px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:16px;width:100%}
 input[type=file]{font-size:14px;color:var(--mu);max-width:100%}
 button.p{padding:12px;border:0;border-radius:10px;background:var(--ac);color:#fff;font-size:16px;font-weight:600;cursor:pointer}
@@ -27,8 +39,6 @@ button.p:disabled{opacity:.6}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:5}
 .modal.on{display:flex}
 .box{background:var(--card);border-radius:16px;padding:18px;max-width:420px;width:100%;text-align:center;max-height:100%;overflow:auto}
-.box h3{margin:0 0 12px}
-.box img{width:100%;max-width:340px;background:#fff;border-radius:10px}
 .row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
 .row button{flex:1;min-width:90px;padding:11px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:15px;cursor:pointer}
 .row button:disabled{opacity:.6}
@@ -36,14 +46,40 @@ button.p:disabled{opacity:.6}
 .row .d{color:#d33}
 .row .r{color:var(--ac)}
 .edit .row .d,.edit .row .r{display:block}
-.hide{display:none}
+.direct #close{display:none}
+.hide{display:none!important}
+@media (max-width:640px){
+  .direct .wrap{grid-template-columns:1fr}
+  .direct .list{display:flex;overflow-x:auto;gap:8px;padding-bottom:6px}
+  .direct .item{width:auto;white-space:nowrap;flex:none;padding:12px 16px}
+}
 </style>
 </head>
 <body>
 <main>
   <h1>Mero QR haru</h1>
-  <p class="s">Name ma click garnus, QR khulchha.</p>
-  <div class="list" id="list"><div class="empty">Load hudai chha...</div></div>
+  <p class="s" id="sub">Name ma click garnus, QR khulchha.</p>
+
+  <div class="wrap">
+    <div class="list" id="list"><div class="empty">Load hudai chha...</div></div>
+    <div class="side" id="side">
+      <div id="qv" class="hide">
+        <h3 id="mt"></h3>
+        <img id="mi" alt="QR">
+        <div class="row">
+          <button id="close">Banda</button>
+          <button class="r" id="rep">Pic replace</button>
+          <button class="d" id="del">Delete</button>
+        </div>
+        <input type="file" id="repfile" accept="image/*" class="hide">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel hide" id="setp">
+    <h2>Display setting</h2>
+    <label class="tg"><input type="checkbox" id="dmode"> Direct dekhaune (QR sidai side ma, popup bina)</label>
+  </div>
 
   <div class="panel hide" id="addp">
     <h2>Naya QR thapnus</h2>
@@ -56,18 +92,7 @@ button.p:disabled{opacity:.6}
   <button class="lnk" id="toggle">Edit (passcode)</button>
 </main>
 
-<div class="modal" id="modal">
-  <div class="box">
-    <h3 id="mt"></h3>
-    <img id="mi" alt="QR">
-    <div class="row">
-      <button id="close">Banda</button>
-      <button class="r" id="rep">Pic replace</button>
-      <button class="d" id="del">Delete</button>
-    </div>
-    <input type="file" id="repfile" accept="image/*" class="hide">
-  </div>
-</div>
+<div class="modal" id="modal"><div class="box" id="boxslot"></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
@@ -75,27 +100,58 @@ const SUPABASE_URL='https://pkbdygfdkeplutnzqjvx.supabase.co';
 const SUPABASE_KEY='sb_publishable_tXcS8w9cY6TozitgxxswmA_tPkKXf1p';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-let items=[],cur=null,pin=null;
+let items=[],cur=null,pin=null,mode='popup';
 
 const pub=p=>sb.storage.from('qrs').getPublicUrl(p).data.publicUrl;
 
+async function loadMode(){
+  const {data}=await sb.rpc('get_view_mode');
+  if(data==='direct'||data==='popup')mode=data;
+  $('dmode').checked=mode==='direct';
+}
 async function load(){
   const {data,error}=await sb.from('qrs').select('*').order('created_at');
   if(error){$('list').innerHTML='<div class="empty">Load garna sakiyena: '+error.message+'</div>';return}
-  items=data;render();
+  items=data;
+  if(cur)cur=items.find(i=>i.id===cur.id)||null;
+  render();
+}
+function showQr(){
+  const direct=mode==='direct';
+  $('mt').textContent=cur.name;
+  $('mi').src=pub(cur.path);
+  $('qv').classList.remove('hide');
+  (direct?$('side'):$('boxslot')).appendChild($('qv'));
+  if(!direct)$('modal').classList.add('on');
 }
 function render(){
+  const direct=mode==='direct';
+  document.body.classList.toggle('direct',direct);
+  $('sub').textContent=direct?'Left bata name chhannus, QR dekhinchha.':'Name ma click garnus, QR khulchha.';
   const l=$('list');l.innerHTML='';
-  if(!items.length){l.innerHTML='<div class="empty">Kei QR chhaina.</div>';return}
+  if(!direct)$('modal').classList.remove('on');
+  if(direct){
+    if(!cur&&items.length)cur=items[0];
+    $('side').appendChild($('qv'));
+  }
+  if(!items.length){
+    l.innerHTML='<div class="empty">Kei QR chhaina.</div>';
+    $('qv').classList.add('hide');return;
+  }
   items.forEach(it=>{
-    const b=document.createElement('button');b.className='item';
+    const b=document.createElement('button');
+    b.className='item'+(direct&&cur&&cur.id===it.id?' active':'');
     b.innerHTML='<b></b><span>QR herna ›</span>';b.firstChild.textContent=it.name;
-    b.onclick=()=>{cur=it;$('mt').textContent=it.name;$('mi').src=pub(it.path);$('modal').classList.add('on')};
+    b.onclick=()=>{cur=it;if(direct)render();showQr()};
     l.appendChild(b);
   });
+  if(direct&&cur)showQr();
+  else if(direct)$('qv').classList.add('hide');
 }
+
 function setEdit(on){
   $('addp').classList.toggle('hide',!on);
+  $('setp').classList.toggle('hide',!on);
   document.body.classList.toggle('edit',on);
   $('toggle').textContent=on?'Edit band garnus':'Edit (passcode)';
   if(!on)pin=null;
@@ -109,6 +165,14 @@ $('toggle').onclick=async()=>{
   if(!data){alert('Passcode galat chha.');return}
   pin=p;setEdit(true);
 };
+
+$('dmode').onchange=async()=>{
+  const want=$('dmode').checked?'direct':'popup';
+  const {error}=await sb.rpc('set_view_mode',{p_pin:pin,p_mode:want});
+  if(error){alert(error.message);$('dmode').checked=mode==='direct';return}
+  mode=want;cur=null;render();
+};
+
 $('close').onclick=()=>$('modal').classList.remove('on');
 $('modal').onclick=e=>{if(e.target===$('modal'))$('modal').classList.remove('on')};
 
@@ -116,7 +180,7 @@ $('del').onclick=async()=>{
   if(!cur||!pin||!confirm('Delete garne?'))return;
   const {error}=await sb.rpc('delete_qr',{p_pin:pin,p_id:cur.id});
   if(error){alert(error.message);return}
-  $('modal').classList.remove('on');load();
+  cur=null;$('modal').classList.remove('on');load();
 };
 
 function shrink(file){
@@ -166,7 +230,8 @@ $('repfile').onchange=async()=>{
   }catch(e){alert('Error: '+e.message)}
   btn.disabled=false;btn.textContent='Pic replace';
 };
-load();
+
+(async()=>{await loadMode();await load();})();
 </script>
 </body>
 </html>
