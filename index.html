@@ -29,10 +29,13 @@ button.p:disabled{opacity:.6}
 .box{background:var(--card);border-radius:16px;padding:18px;max-width:420px;width:100%;text-align:center;max-height:100%;overflow:auto}
 .box h3{margin:0 0 12px}
 .box img{width:100%;max-width:340px;background:#fff;border-radius:10px}
-.row{display:flex;gap:10px;margin-top:14px}
-.row button{flex:1;padding:11px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:15px;cursor:pointer}
-.row .d{color:#d33;display:none}
-.edit .row .d{display:block}
+.row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.row button{flex:1;min-width:90px;padding:11px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:15px;cursor:pointer}
+.row button:disabled{opacity:.6}
+.row .d,.row .r{display:none}
+.row .d{color:#d33}
+.row .r{color:var(--ac)}
+.edit .row .d,.edit .row .r{display:block}
 .hide{display:none}
 </style>
 </head>
@@ -57,7 +60,12 @@ button.p:disabled{opacity:.6}
   <div class="box">
     <h3 id="mt"></h3>
     <img id="mi" alt="QR">
-    <div class="row"><button id="close">Banda</button><button class="d" id="del">Delete</button></div>
+    <div class="row">
+      <button id="close">Banda</button>
+      <button class="r" id="rep">Pic replace</button>
+      <button class="d" id="del">Delete</button>
+    </div>
+    <input type="file" id="repfile" accept="image/*" class="hide">
   </div>
 </div>
 
@@ -124,20 +132,39 @@ function shrink(file){
     im.src=URL.createObjectURL(file);
   });
 }
+async function uploadImg(file){
+  const blob=await shrink(file),path=crypto.randomUUID()+'.jpg';
+  const r=await sb.storage.from('qrs').upload(path,blob,{contentType:'image/jpeg'});
+  if(r.error)throw r.error;
+  return path;
+}
+
 $('save').onclick=async()=>{
   const n=$('name').value.trim(),f=$('file').files[0];
   if(!pin){alert('Pahile passcode halnus.');return}
   if(!n||!f){alert('Name ra QR image duitai chahinchha.');return}
   const btn=$('save');btn.disabled=true;btn.textContent='Upload hudai chha...';
   try{
-    const blob=await shrink(f),path=crypto.randomUUID()+'.jpg';
-    let r=await sb.storage.from('qrs').upload(path,blob,{contentType:'image/jpeg'});
-    if(r.error)throw r.error;
-    r=await sb.rpc('add_qr',{p_pin:pin,p_name:n,p_path:path});
+    const path=await uploadImg(f);
+    const r=await sb.rpc('add_qr',{p_pin:pin,p_name:n,p_path:path});
     if(r.error)throw r.error;
     $('name').value='';$('file').value='';load();
   }catch(e){alert('Error: '+e.message)}
   btn.disabled=false;btn.textContent='Save garnus';
+};
+
+$('rep').onclick=()=>{if(pin&&cur)$('repfile').click()};
+$('repfile').onchange=async()=>{
+  const f=$('repfile').files[0];$('repfile').value='';
+  if(!f||!pin||!cur)return;
+  const btn=$('rep');btn.disabled=true;btn.textContent='Upload hudai chha...';
+  try{
+    const path=await uploadImg(f);
+    const r=await sb.rpc('replace_qr',{p_pin:pin,p_id:cur.id,p_path:path});
+    if(r.error)throw r.error;
+    cur.path=path;$('mi').src=pub(path);load();
+  }catch(e){alert('Error: '+e.message)}
+  btn.disabled=false;btn.textContent='Pic replace';
 };
 load();
 </script>
