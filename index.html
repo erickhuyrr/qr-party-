@@ -51,27 +51,30 @@ body:not(.direct) .tile:nth-child(5n+1){grid-column:span 2;aspect-ratio:2.2/1}
 .tile:hover{transform:translateY(-4px);border-color:var(--a);background:color-mix(in srgb,var(--a) 12%,var(--gl))}
 .tile:active{transform:scale(.96)}
 .tp{display:flex;justify-content:space-between;align-items:flex-start}
+.tl{display:block;height:36px;max-width:96px;object-fit:contain;padding:5px 9px;background:#fff;border-radius:12px;animation:up2 .4s both}
 .ar{width:34px;height:34px;border-radius:50%;border:1px solid var(--ln);display:grid;place-items:center;transition:all .25s}
 .tile:hover .ar{background:var(--a);color:#fff;border-color:transparent;transform:rotate(45deg)}
 .tn b{display:block;font:800 clamp(22px,6vw,30px)/1.02 'Bricolage Grotesque',sans-serif;letter-spacing:-.04em;overflow-wrap:anywhere}
-.direct .tile{aspect-ratio:auto;flex-direction:row;align-items:center;gap:12px;border-radius:99px;padding:15px 22px}
+.direct .tile{aspect-ratio:auto;flex-direction:row;align-items:center;gap:12px;border-radius:99px;padding:12px 22px 12px 14px}
 .direct .tp{display:block}.direct .ar,.direct .kd span{display:none}
+.direct .tl{height:30px;max-width:58px;padding:4px 7px;border-radius:9px}
 .direct .tn b{font-size:18px}
 .direct .tile.active{border-color:var(--a);background:color-mix(in srgb,var(--a) 14%,var(--gl))}
 .sk{aspect-ratio:1/.9;border-radius:26px;background:linear-gradient(90deg,var(--gl) 25%,var(--ln) 50%,var(--gl) 75%);background-size:200% 100%;animation:sh 1.2s infinite}
 .empty{grid-column:1/-1;color:var(--mu);text-align:center;padding:30px 0}
 .side{display:none}.direct .side{display:block}
 #qv{text-align:center;padding:4px 0 8px}
+.lg{display:block;margin:0 auto 14px;height:64px;max-width:180px;object-fit:contain;padding:10px 16px;background:#fff;border-radius:20px;box-shadow:0 12px 30px -12px color-mix(in srgb,var(--a) 70%,transparent)}
 .nm{margin:10px 0 20px;font:800 clamp(36px,10vw,56px)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em;overflow-wrap:anywhere}
 .qw{display:inline-block;width:100%;max-width:330px}
 .direct .qw{max-width:380px}
-.qr{position:relative;padding:20px;border-radius:26px;background:#fff;overflow:hidden;--br:linear-gradient(#0a0a0a,#0a0a0a);box-shadow:0 30px 80px -30px color-mix(in srgb,var(--a) 70%,transparent)}
-.qr::before{content:"";position:absolute;inset:8px;border-radius:16px;pointer-events:none;background:var(--br) 0 0/24px 3px,var(--br) 0 0/3px 24px,var(--br) 100% 0/24px 3px,var(--br) 100% 0/3px 24px,var(--br) 0 100%/24px 3px,var(--br) 0 100%/3px 24px,var(--br) 100% 100%/24px 3px,var(--br) 100% 100%/3px 24px;background-repeat:no-repeat}
-.qr::after{content:"";position:absolute;left:14px;right:14px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--a),transparent);box-shadow:0 0 14px var(--a);animation:scan 2.4s ease-in-out infinite}
-.swap .kd,.swap .nm{animation:up2 .6s cubic-bezier(.2,.9,.2,1) both}
+.qr{position:relative;padding:14px;border-radius:26px;background:#fff;overflow:hidden;--br:linear-gradient(#0a0a0a,#0a0a0a);box-shadow:0 30px 80px -30px color-mix(in srgb,var(--a) 70%,transparent)}
+.qr::before{content:"";position:absolute;inset:6px;border-radius:18px;pointer-events:none;background:var(--br) 0 0/24px 3px,var(--br) 0 0/3px 24px,var(--br) 100% 0/24px 3px,var(--br) 100% 0/3px 24px,var(--br) 0 100%/24px 3px,var(--br) 0 100%/3px 24px,var(--br) 100% 100%/24px 3px,var(--br) 100% 100%/3px 24px;background-repeat:no-repeat}
+.qr::after{content:"";position:absolute;left:12px;right:12px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--a),transparent);box-shadow:0 0 14px var(--a);animation:scan 2.4s ease-in-out infinite}
+.swap .kd,.swap .nm,.swap .lg{animation:up2 .6s cubic-bezier(.2,.9,.2,1) both}
 .swap .nm{animation-delay:.06s}
 .swap .qr{animation:qrIn .65s cubic-bezier(.2,1.1,.3,1) both}
-#mi{display:block;width:100%;border-radius:8px;opacity:0;transform:scale(.92);filter:blur(8px);transition:all .5s cubic-bezier(.2,1,.3,1)}
+#mi{display:block;width:100%;border-radius:10px;opacity:0;transform:scale(.92);filter:blur(8px);transition:all .5s cubic-bezier(.2,1,.3,1)}
 #mi.in{opacity:1;transform:none;filter:none}
 .hint{margin-top:18px;font-size:11.5px;letter-spacing:.04em;color:var(--mu)}
 .row{display:flex;gap:8px;margin:16px auto 0;flex-wrap:wrap;max-width:380px}
@@ -83,6 +86,7 @@ body:not(.direct) .tile:nth-child(5n+1){grid-column:span 2;aspect-ratio:2.2/1}
 .direct #close{display:none}
 .panel{margin-top:22px;padding:18px;background:var(--gl);border:1px solid var(--ln);border-radius:24px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:grid;gap:12px;animation:pop .45s both}
 .panel h2{margin:0;font:800 18px 'Bricolage Grotesque',sans-serif;letter-spacing:-.02em}
+.panel p{margin:0;font-size:13px;color:var(--mu)}
 .tg{display:flex;align-items:center;gap:10px;font-size:15px}
 .tg input{width:20px;height:20px;accent-color:#d4ff3a}
 input[type=text]{padding:14px 18px;border:1px solid var(--ln);border-radius:99px;background:transparent;color:var(--tx);font:inherit;width:100%}
@@ -91,6 +95,8 @@ input[type=file]{font-size:14px;color:var(--mu);max-width:100%}
 button.p{padding:15px;border:0;border-radius:99px;background:var(--ac);color:var(--ink);font:800 16px 'DM Sans';cursor:pointer;transition:transform .15s}
 button.p:active{transform:scale(.96)}button.p:disabled{opacity:.6}
 .lnk{display:block;margin:26px auto 0;padding:9px 16px;border:1px solid var(--ln);border-radius:99px;background:var(--gl);color:var(--mu);font:500 13px 'DM Sans';cursor:pointer}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,30px);opacity:0;padding:12px 18px;border-radius:99px;background:#f5f5f2;color:#0a0a0a;font:600 14px 'DM Sans';z-index:200;transition:all .35s;max-width:90vw;text-align:center;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
 .modal{--tx:#f5f5f2;--mu:#b3b3bd;--ln:rgba(255,255,255,.22);--gl:rgba(255,255,255,.08);position:fixed;inset:0;background:rgba(5,5,10,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:none;align-items:flex-end;justify-content:center;padding:12px 12px 22px;z-index:50;color:var(--tx)}
 .modal.on{display:flex;animation:fade .25s both}
 .sheet{width:100%;max-width:440px;max-height:100%;overflow:auto}
@@ -119,7 +125,7 @@ button.p:active{transform:scale(.96)}button.p:disabled{opacity:.6}
 @keyframes pop{from{opacity:0;transform:translateY(22px) scale(.94)}to{opacity:1;transform:none}}
 @keyframes sheet{from{transform:translateY(100%)}to{transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-@keyframes scan{0%,100%{top:14px;opacity:0}15%,85%{opacity:1}50%{top:calc(100% - 17px)}}
+@keyframes scan{0%,100%{top:12px;opacity:0}15%,85%{opacity:1}50%{top:calc(100% - 15px)}}
 @keyframes sh{to{background-position:-200% 0}}
 @keyframes mq{to{transform:translateX(-100%)}}
 @keyframes pulse{50%{opacity:.3}}
@@ -163,7 +169,8 @@ button.p:active{transform:scale(.96)}button.p:disabled{opacity:.6}
     <div class="list" id="list"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>
     <div class="side" id="side">
       <div id="qv" class="hide">
-        <div class="kd"><i></i><span id="kt"></span></div>
+        <img id="lg" class="lg hide" alt="">
+        <div class="kd" id="kd"><i></i><span id="kt"></span></div>
         <h3 class="nm" id="mt"></h3>
         <div class="qw"><div class="qr"><img id="mi" alt="QR"></div></div>
         <div class="hint">Phone ko camera ya app le scan garnus</div>
@@ -184,6 +191,7 @@ button.p:active{transform:scale(.96)}button.p:disabled{opacity:.6}
 
   <div class="panel hide" id="addp">
     <h2>Naya QR thapnus</h2>
+    <p>Pura photo/screenshot halda pani QR matra afai crop hunchha.</p>
     <input type="text" id="name" list="sug" placeholder="Name (jastai: eSewa, Nabil Bank)">
     <datalist id="sug"><option>eSewa</option><option>Khalti</option><option>IME Pay</option><option>Fonepay</option><option>Nabil Bank</option><option>NIC Asia</option><option>Global IME Bank</option></datalist>
     <input type="file" id="file" accept="image/*">
@@ -194,7 +202,9 @@ button.p:active{transform:scale(.96)}button.p:disabled{opacity:.6}
 </main>
 
 <div class="modal" id="modal"><div class="sheet" id="boxslot"></div></div>
+<div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 const SUPABASE_URL='https://pkbdygfdkeplutnzqjvx.supabase.co';
@@ -205,6 +215,7 @@ let items=[],cur=null,pin=null,mode='popup';
 const pub=p=>sb.storage.from('qrs').getPublicUrl(p).data.publicUrl;
 const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
 const ARR='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>';
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3200)}
 
 /* brand colors: [keyword, color] */
 const BR=[['esewa','#60bb46'],['khalti','#7a3fd1'],['ime','#e1251b'],['fonepay','#e31b23'],['nabil','#d71920'],['nic','#e4002b'],['global','#2f6bff'],['siddhartha','#c8102e'],['connect','#00a3e0'],['prabhu','#f37021'],['cellpay','#f5a623']];
@@ -212,6 +223,59 @@ const FB=['#d4ff3a','#ff6a3d','#4d7cff','#b28cff','#00d1a0','#ff4d8d'];
 const hs=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h};
 function theme(n){const s=n.toLowerCase();for(const b of BR)if(s.includes(b[0]))return b[1];return FB[hs(s)%FB.length]}
 const kind=n=>/esewa|khalti|ime|fonepay|connect|prabhu|cellpay|pay/i.test(n)?'Wallet':'Bank';
+
+/* logos: put files in the "logos" folder next to index.html, named like esewa.png, khalti.png, imepay.png */
+const EXT=['png','svg','webp','jpg','jpeg'],LC=new Map();
+function slugs(n){
+  const w=n.toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(Boolean);
+  const full=w.join(''),core=w.filter(x=>!['bank','ltd','limited'].includes(x)).join('');
+  return [...new Set([full,core,w[0]])].filter(Boolean);
+}
+const probe=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(src);i.onerror=()=>r(null);i.src=src});
+function logoFor(n){
+  if(!LC.has(n)){
+    const c=[];slugs(n).forEach(s=>EXT.forEach(e=>c.push('logos/'+s+'.'+e)));
+    LC.set(n,Promise.all(c.map(probe)).then(r=>r.find(Boolean)||null));
+  }
+  return LC.get(n);
+}
+
+/* upload: find the QR inside the photo and crop to it */
+const loadImg=f=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('Image padhna sakiyena'));im.src=URL.createObjectURL(f)});
+async function findQr(c){
+  if('BarcodeDetector' in window){
+    try{const r=await new BarcodeDetector({formats:['qr_code']}).detect(c);if(r.length)return r[0].cornerPoints.map(p=>[p.x,p.y])}catch(e){}
+  }
+  if(window.jsQR){
+    const id=c.getContext('2d').getImageData(0,0,c.width,c.height);
+    const q=jsQR(id.data,id.width,id.height,{inversionAttempts:'attemptBoth'});
+    if(q){const l=q.location;return[l.topLeftCorner,l.topRightCorner,l.bottomRightCorner,l.bottomLeftCorner].map(p=>[p.x,p.y])}
+  }
+  return null;
+}
+async function prepare(file){
+  const im=await loadImg(file),r=Math.min(1,1400/Math.max(im.naturalWidth,im.naturalHeight));
+  const c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*r);c.height=Math.round(im.naturalHeight*r);
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+  const pts=await findQr(c);let out=c;
+  if(pts){
+    const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+    const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+    const side=Math.max(x1-x0,y1-y0),S=side*1.2,cx=(x0+x1)/2,cy=(y0+y1)/2;
+    out=document.createElement('canvas');out.width=out.height=Math.min(900,Math.round(S));
+    const o=out.getContext('2d');o.fillStyle='#fff';o.fillRect(0,0,out.width,out.height);
+    o.drawImage(c,cx-S/2,cy-S/2,S,S,0,0,out.width,out.height);
+  }
+  const blob=await new Promise((res,rej)=>out.toBlob(b=>b?res(b):rej(new Error('Image convert bhayena')),'image/jpeg',.92));
+  return{blob,found:!!pts};
+}
+async function uploadImg(file){
+  const {blob,found}=await prepare(file),path=crypto.randomUUID()+'.jpg';
+  const r=await sb.storage.from('qrs').upload(path,blob,{contentType:'image/jpeg'});
+  if(r.error)throw r.error;
+  toast(found?'QR auto-crop bhayo':'QR detect bhayena, pura photo upload bhayo');
+  return path;
+}
 
 async function loadMode(){
   const {data}=await sb.rpc('get_view_mode');
@@ -233,10 +297,12 @@ function marquee(){
   for(let k=0;k<2;k++){const d=document.createElement('div');d.textContent=t.repeat(r);m.appendChild(d)}
 }
 function showQr(){
-  const direct=mode==='direct',img=$('mi'),q=$('qv'),c=theme(cur.name);
+  const direct=mode==='direct',img=$('mi'),q=$('qv'),c=theme(cur.name),nm=cur.name,lg=$('lg');
   q.style.setProperty('--a',c);
   document.documentElement.style.setProperty('--ga',c);
-  $('mt').textContent=cur.name;$('kt').textContent=kind(cur.name);
+  $('mt').textContent=nm;$('kt').textContent=kind(nm);
+  lg.classList.add('hide');lg.removeAttribute('src');$('kd').classList.remove('hide');
+  logoFor(nm).then(u=>{if(u&&cur&&cur.name===nm){lg.src=u;lg.classList.remove('hide');$('kd').classList.add('hide')}});
   img.classList.remove('in');
   img.onload=()=>img.classList.add('in');
   img.src=pub(cur.path);
@@ -261,6 +327,11 @@ function render(){
     b.innerHTML='<div class="tp"><span class="kd"><i></i><span></span></span><span class="ar">'+ARR+'</span></div><div class="tn"><b></b></div>';
     b.querySelector('.kd span').textContent=kind(it.name);
     b.querySelector('b').textContent=it.name;
+    logoFor(it.name).then(u=>{
+      if(!u)return;
+      const im=new Image();im.className='tl';im.alt='';im.src=u;
+      const k=b.querySelector('.kd');if(k)k.replaceWith(im);
+    });
     b.onclick=()=>{
       buzz();cur=it;
       if(mode==='direct')document.querySelectorAll('.tile').forEach(x=>x.classList.toggle('active',x===b));
@@ -300,25 +371,6 @@ $('del').onclick=async()=>{
   if(error){alert(error.message);return}
   cur=null;$('modal').classList.remove('on');load();
 };
-function shrink(file){
-  return new Promise((res,rej)=>{
-    const im=new Image();
-    im.onload=()=>{
-      const s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');
-      c.width=im.width*s;c.height=im.height*s;
-      const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
-      c.toBlob(b=>b?res(b):rej(new Error('Image convert bhayena')),'image/jpeg',.9);
-    };
-    im.onerror=()=>rej(new Error('Image padhna sakiyena'));
-    im.src=URL.createObjectURL(file);
-  });
-}
-async function uploadImg(file){
-  const blob=await shrink(file),path=crypto.randomUUID()+'.jpg';
-  const r=await sb.storage.from('qrs').upload(path,blob,{contentType:'image/jpeg'});
-  if(r.error)throw r.error;
-  return path;
-}
 $('save').onclick=async()=>{
   const n=$('name').value.trim(),f=$('file').files[0];
   if(!pin){alert('Pahile passcode halnus.');return}
