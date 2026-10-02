@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mero QR</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%232358d6'/%3E%3Cg fill='%23fff'%3E%3Crect x='9' y='9' width='12' height='12' rx='2'/%3E%3Crect x='27' y='9' width='12' height='12' rx='2'/%3E%3Crect x='9' y='27' width='12' height='12' rx='2'/%3E%3Crect x='27' y='27' width='5' height='5'/%3E%3Crect x='35' y='27' width='4' height='5'/%3E%3Crect x='27' y='35' width='5' height='4'/%3E%3Crect x='35' y='35' width='4' height='4'/%3E%3C/g%3E%3Cg fill='%232358d6'%3E%3Crect x='13' y='13' width='4' height='4'/%3E%3Crect x='31' y='13' width='4' height='4'/%3E%3Crect x='13' y='31' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f4f1;--card:#fff;--tx:#1c1b1a;--mu:#6e6b66;--ln:#e3e0da;--pr:#2358d6;--prt:#fff;--a:#2358d6}
+@media (prefers-color-scheme:dark){:root{--bg:#141413;--card:#1e1e1c;--tx:#f0eeea;--mu:#9c9890;--ln:#2e2d2a;--pr:#6c93ff;--prt:#0d0d0d}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 'Poppins',system-ui,sans-serif}
+main{max-width:520px;margin:0 auto;padding:28px 16px 48px}
+.direct main{max-width:900px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+h1{margin:0;font-size:26px;font-weight:700;line-height:1.2}
+header p{margin:2px 0 0;color:var(--mu)}
+.mark{width:48px;height:48px;flex:none;color:var(--pr)}
+.mark.big{width:80px;height:80px;animation:pop .55s cubic-bezier(.2,1.2,.3,1) both}
+.wrap{display:block}
+.direct .wrap{display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start}
+.list{display:grid;gap:10px}
+.item{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;background:var(--card);border:1px solid var(--ln);border-left:4px solid var(--a);border-radius:10px;color:var(--tx);font:inherit;text-align:left;cursor:pointer;transition:box-shadow .15s,background .15s}
+.item:hover{box-shadow:0 2px 12px rgba(0,0,0,.1)}
+.item:active{background:var(--bg)}
+.item.active{background:color-mix(in srgb,var(--a) 9%,var(--card));border-color:var(--a)}
+.item .go{margin-left:auto;color:var(--mu);flex:none}
+.ic{width:44px;height:44px;border-radius:10px;background:var(--bg);display:grid;place-items:center;flex:none;color:var(--mu);overflow:hidden}
+.ic img{width:100%;height:100%;object-fit:contain;background:#fff;padding:4px}
+.tx{min-width:0}
+.tx b{display:block;font-weight:600;font-size:16px;overflow-wrap:anywhere}
+.tx small{color:var(--mu);font-size:13px}
+.direct .go{display:none}
+.skel{height:68px;border-radius:10px;background:linear-gradient(90deg,var(--card) 25%,var(--ln) 50%,var(--card) 75%);background-size:200% 100%;animation:sh 1.2s infinite}
+.empty{color:var(--mu);text-align:center;padding:30px 0}
+.side{display:none}.direct .side{display:block}
+#qv{text-align:center}
+.qhead{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:16px}
+.ic.big{width:64px;height:64px;border-radius:14px;border:1px solid var(--ln)}
+.qhead h3{margin:6px 0 0;font-size:26px;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.qhead small{color:var(--mu);font-size:13px}
+.qcard{display:inline-block;width:100%;max-width:320px;min-height:200px;padding:14px;background:#fff;border:1px solid var(--ln);border-top:4px solid var(--a);border-radius:12px}
+.direct .qcard{max-width:360px}
+#mi{display:block;width:100%;opacity:0;transition:opacity .3s}
+#mi.in{opacity:1}
+.note{margin:14px 0 0;color:var(--mu);font-size:13px}
+.acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.btn{padding:10px 16px;border-radius:8px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:500 14px 'Poppins',sans-serif;cursor:pointer}
+.btn:active{background:var(--bg)}.btn:disabled{opacity:.6}
+.btn.pr{background:var(--pr);color:var(--prt);border-color:transparent}
+.btn.dg{color:#d6342c}
+.acts .r,.acts .d{display:none}
+.edit .acts .r,.edit .acts .d{display:inline-block}
+.direct #close{display:none}
+.panel{margin-top:22px;padding:16px;background:var(--card);border:1px solid var(--ln);border-radius:12px;display:grid;gap:10px}
+.panel h2{margin:0;font-size:16px;font-weight:600}
+.panel p{margin:0;font-size:13px;color:var(--mu)}
+.tg{display:flex;align-items:center;gap:10px}
+.tg input{width:18px;height:18px}
+input[type=text]{padding:11px 12px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;width:100%}
+input[type=text]:focus{outline:2px solid var(--pr);border-color:transparent}
+input[type=file]{font:inherit;font-size:13px;color:var(--mu);max-width:100%}
+.owner{display:block;margin:28px auto 0;background:none;border:0;color:var(--mu);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;padding:10px 16px;border-radius:8px;background:#222;color:#fff;font-size:14px;z-index:300;transition:all .3s;max-width:90vw;text-align:center;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:color-mix(in srgb,var(--bg) 94%,transparent);overflow:auto}
+.modal.on{display:flex;animation:fade .2s both}
+.sheet{width:100%;max-width:400px;margin:auto}
+.modal.on .sheet{animation:rise .25s ease-out both}
+#cm{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.88);display:grid;place-items:center;padding:16px;overflow:auto;color:#fff}
+.cmb{width:min(520px,100%);display:grid;gap:12px;text-align:center}
+.cmb p{margin:0;font-size:14px;color:#ccc}
+.cw{position:relative;margin:0 auto;touch-action:none;line-height:0;cursor:crosshair}
+.cw img{max-width:100%;max-height:60vh;display:block;user-select:none;-webkit-user-drag:none}
+#cb{position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.55);pointer-events:none}
+#cs{width:100%}
+#cm .acts{margin:0}
+#cm .btn{background:#2a2a2a;color:#fff;border-color:#444}
+#cm .btn.pr{background:#fff;color:#111;border:0}
+.hide{display:none!important}
+#splash{position:fixed;inset:0;z-index:100;display:grid;place-content:center;justify-items:center;gap:16px;background:var(--bg);transition:opacity .4s,visibility .4s}
+#splash.gone{opacity:0;visibility:hidden}
+#splash{gap:24px}
+.pq{display:grid;grid-template:repeat(7,14px)/repeat(7,14px);gap:4px;animation:spinin .9s cubic-bezier(.2,1.2,.3,1) both}
+.pq b{border-radius:3px;background:var(--tx);animation:px .45s cubic-bezier(.2,1.5,.3,1) both}
+.pq b.l{background:var(--pr)}
+.wm{display:flex;overflow:hidden;padding-bottom:.12em;font-size:44px;font-weight:700;line-height:1.1;letter-spacing:-.02em}
+.wm i{display:inline-block;font-style:normal;animation:lrise .7s cubic-bezier(.2,.9,.2,1) both;animation-delay:var(--d)}
+.wm .gap{width:.28em}
+.pr{width:min(220px,60vw);height:3px;background:var(--ln);border-radius:3px;overflow:hidden}
+.pr i{display:block;height:100%;width:0;background:var(--pr);animation:fill 1.6s ease-in-out forwards}
+@keyframes lrise{from{transform:translateY(115%)}}
+@keyframes spinin{from{transform:scale(.5) rotate(-60deg);opacity:0}}
+@keyframes px{from{transform:scale(0);opacity:0}}
+@keyframes fill{to{width:100%}}
+@keyframes pop{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:none}}
+.spin{width:24px;height:24px;border:3px solid var(--ln);border-top-color:var(--pr);border-radius:50%;animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+@keyframes sh{to{background-position:-200% 0}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (max-width:700px){
+ .direct .wrap{grid-template-columns:1fr;gap:20px}
+ .direct .list{display:flex;overflow-x:auto;gap:8px;padding-bottom:6px}
+ .direct .item{flex:none;width:auto;padding:8px 12px;gap:10px}
+ .direct .item .tx small{display:none}
+ .direct .item .ic{width:32px;height:32px}
+ .direct .item .tx b{font-size:14px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="lg" viewBox="0 0 48 48">
+    <rect width="48" height="48" rx="11" fill="currentColor"/>
+    <g fill="#fff"><rect x="9" y="9" width="12" height="12" rx="2"/><rect x="27" y="9" width="12" height="12" rx="2"/><rect x="9" y="27" width="12" height="12" rx="2"/><rect x="27" y="27" width="5" height="5"/><rect x="35" y="27" width="4" height="5"/><rect x="27" y="35" width="5" height="4"/><rect x="35" y="35" width="4" height="4"/></g>
+    <g fill="currentColor"><rect x="13" y="13" width="4" height="4"/><rect x="31" y="13" width="4" height="4"/><rect x="13" y="31" width="4" height="4"/></g>
+  </symbol>
+</svg>
+
+<div id="splash">
+  <div class="pq" id="pq"></div>
+  <div class="wm"><i style="--d:.15s">M</i><i style="--d:.21s">e</i><i style="--d:.27s">r</i><i style="--d:.33s">o</i><i class="gap"></i><i style="--d:.45s">Q</i><i style="--d:.51s">R</i></div>
+  <div class="pr"><i></i></div>
+</div>
+
+<main>
+  <header>
+    <svg class="mark"><use href="#lg"/></svg>
+    <div>
+      <h1>Mero QR</h1>
+      <p id="sub">Paisa pathauna app chhannus, ani QR scan garnus.</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="list" id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    <div class="side" id="side">
+      <div id="qv" class="hide">
+        <div class="qhead">
+          <span class="ic big" id="lgw"></span>
+          <h3 id="mt"></h3>
+          <small id="kt"></small>
+        </div>
+        <div class="qcard"><img id="mi" alt="QR"></div>
+        <p class="note">Camera ya payment app bata scan garnus</p>
+        <div class="acts">
+          <button class="btn" id="close">Banda</button>
+          <button class="btn r" id="crp">Crop</button>
+          <button class="btn r" id="rep">Pic replace</button>
+          <button class="btn d dg" id="del">Delete</button>
+        </div>
+        <input type="file" id="repfile" accept="image/*" class="hide">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel hide" id="setp">
+    <h2>Display setting</h2>
+    <label class="tg"><input type="checkbox" id="dmode"> QR sidai dekhaune (popup bina)</label>
+  </div>
+
+  <div class="panel hide" id="addp">
+    <h2>Naya QR thapnus</h2>
+    <p>Pura photo/screenshot halda pani QR matra afai crop hunchha.</p>
+    <input type="text" id="name" list="sug" placeholder="Name (jastai: eSewa, Nabil Bank)">
+    <datalist id="sug"><option>eSewa</option><option>Khalti</option><option>IME Pay</option><option>Fonepay</option><option>Nabil Bank</option><option>NIC Asia</option><option>Global IME Bank</option></datalist>
+    <input type="file" id="file" accept="image/*">
+    <button class="btn pr" id="save">Save garnus</button>
+  </div>
+
+  <button class="owner" id="toggle">Owner login</button>
+</main>
+
+<div class="modal" id="modal"><div class="sheet" id="boxslot"></div></div>
+
+<div id="cm" class="hide">
+  <div class="cmb">
+    <p>QR ma tap/tanera box rakhnus, ani slider le size milaunus.</p>
+    <div class="cw" id="cw"><img id="ci" alt=""><div id="cb"></div></div>
+    <input type="range" id="cs" min="15" max="100" value="60">
+    <div class="acts"><button class="btn" id="cx">Radd</button><button class="btn pr" id="ck">Crop save</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL='https://pkbdygfdkeplutnzqjvx.supabase.co';
+const SUPABASE_KEY='sb_publishable_tXcS8w9cY6TozitgxxswmA_tPkKXf1p';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let items=[],cur=null,pin=null,mode='popup';
+const pub=p=>sb.storage.from('qrs').getPublicUrl(p).data.publicUrl;
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3400)}
+
+const SV='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">';
+const ICON={
+  Wallet:SV+'<path d="M3 7a2 2 0 0 1 2-2h11v3"/><rect x="3" y="7" width="18" height="12" rx="2"/><circle cx="16.5" cy="13" r="1.1"/></svg>',
+  Bank:SV+'<path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg>'
+};
+const GO='<svg class="go" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+
+/* brand colors: [keyword, color] */
+const BR=[['esewa','#60bb46'],['khalti','#5c2d91'],['ime','#e1251b'],['fonepay','#e31b23'],['nabil','#d71920'],['nic','#e4002b'],['global','#1d4ed8'],['siddhartha','#c8102e'],['connect','#00a3e0'],['prabhu','#f37021'],['cellpay','#f5a623']];
+const FB=['#2358d6','#0f8a5f','#c2570c','#7a3fd1','#b4234e','#0b7285'];
+const hs=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h};
+function theme(n){const s=n.toLowerCase();for(const b of BR)if(s.includes(b[0]))return b[1];return FB[hs(s)%FB.length]}
+const kind=n=>/esewa|khalti|ime|fonepay|connect|prabhu|cellpay|pay/i.test(n)?'Wallet':'Bank';
+
+/* logos: put files in the "logos" folder next to index.html, e.g. esewa.png, khalti.png, imepay.png */
+const EXT=['png','svg','webp','jpg','jpeg'],LC=new Map();
+function slugs(n){
+  const w=n.toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(Boolean);
+  const full=w.join(''),core=w.filter(x=>!['bank','ltd','limited'].includes(x)).join('');
+  return [...new Set([full,core,w[0]])].filter(Boolean);
+}
+const probe=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(src);i.onerror=()=>r(null);i.src=src});
+function logoFor(n){
+  if(!LC.has(n)){
+    const c=[];slugs(n).forEach(s=>EXT.forEach(e=>c.push('logos/'+s+'.'+e)));
+    LC.set(n,Promise.all(c.map(probe)).then(r=>r.find(Boolean)||null));
+  }
+  return LC.get(n);
+}
+function setIcon(el,name,still){
+  el.innerHTML=ICON[kind(name)];
+  logoFor(name).then(u=>{
+    if(!u||!still())return;
+    const im=new Image();im.alt='';im.src=u;el.innerHTML='';el.appendChild(im);
+  });
+}
+
+/* QR detection + crop (works on upload and when showing old full photos) */
+const loadUrl=(u,cors)=>new Promise((res,rej)=>{const im=new Image();if(cors)im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=()=>rej(new Error('Image load hoina'));im.src=u});
+async function findQr(c){
+  if('BarcodeDetector' in window){
+    try{const r=await new BarcodeDetector({formats:['qr_code']}).detect(c);if(r.length)return r[0].cornerPoints.map(p=>[p.x,p.y])}catch(e){}
+  }
+  if(window.jsQR){
+    const id=c.getContext('2d',{willReadFrequently:true}).getImageData(0,0,c.width,c.height);
+    const q=jsQR(id.data,id.width,id.height,{inversionAttempts:'attemptBoth'});
+    if(q){const l=q.location;return[l.topLeftCorner,l.topRightCorner,l.bottomRightCorner,l.bottomLeftCorner].map(p=>[p.x,p.y])}
+  }
+  return null;
+}
+async function detect(im){
+  const W=im.naturalWidth,H=im.naturalHeight,seen=new Set();
+  for(const m of [1600,1000,640,400]){
+    const r=Math.min(1,m/Math.max(W,H));if(seen.has(r))continue;seen.add(r);
+    for(const f of ['none','grayscale(1) contrast(2.2)']){
+      const c=document.createElement('canvas');c.width=Math.round(W*r);c.height=Math.round(H*r);
+      const x=c.getContext('2d',{willReadFrequently:true});x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+      x.filter=f;x.drawImage(im,0,0,c.width,c.height);
+      const p=await findQr(c);
+      if(p)return p.map(q=>[q[0]/r,q[1]/r]);
+    }
+  }
+  return null;
+}
+function cropCanvas(im,pts){
+  const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const S=Math.max(x1-x0,y1-y0)*1.2,cx=(x0+x1)/2,cy=(y0+y1)/2;
+  const o=document.createElement('canvas');o.width=o.height=Math.min(900,Math.round(S));
+  const g=o.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,o.width,o.height);
+  g.drawImage(im,cx-S/2,cy-S/2,S,S,0,0,o.width,o.height);
+  return o;
+}
+const toBlob=c=>new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('Image convert bhayena')),'image/jpeg',.92));
+const CC=new Map();
+function autoCrop(path){
+  if(!CC.has(path))CC.set(path,(async()=>{
+    try{const im=await loadUrl(pub(path)+'?cors=1',true),p=await detect(im);return p?cropCanvas(im,p).toDataURL('image/jpeg',.92):null}
+    catch(e){return null}
+  })());
+  return CC.get(path);
+}
+async function prepare(file){
+  const im=await loadUrl(URL.createObjectURL(file),false),pts=await detect(im);
+  let out;
+  if(pts)out=cropCanvas(im,pts);
+  else{
+    const r=Math.min(1,1400/Math.max(im.naturalWidth,im.naturalHeight));
+    out=document.createElement('canvas');out.width=Math.round(im.naturalWidth*r);out.height=Math.round(im.naturalHeight*r);
+    const g=out.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,out.width,out.height);g.drawImage(im,0,0,out.width,out.height);
+  }
+  return{blob:await toBlob(out),found:!!pts};
+}
+async function putBlob(blob,tag){
+  const path=crypto.randomUUID()+tag+'.jpg';
+  const r=await sb.storage.from('qrs').upload(path,blob,{contentType:'image/jpeg'});
+  if(r.error)throw r.error;
+  return path;
+}
+async function uploadImg(file){
+  const {blob,found}=await prepare(file);
+  const path=await putBlob(blob,found?'-q':'');
+  toast(found?'QR auto-crop bhayo':'Auto-crop bhayena. QR kholera Crop thichnus.');
+  return path;
+}
+
+async function loadMode(){
+  const {data}=await sb.rpc('get_view_mode');
+  if(data==='direct'||data==='popup')mode=data;
+  $('dmode').checked=mode==='direct';
+}
+async function load(){
+  const {data,error}=await sb.from('qrs').select('*').order('created_at');
+  if(error){$('list').innerHTML='<div class="empty">Load garna sakiyena: '+error.message+'</div>';return}
+  items=data;
+  if(cur)cur=items.find(i=>i.id===cur.id)||null;
+  render();
+}
+function showQr(){
+  const direct=mode==='direct',img=$('mi'),q=$('qv'),nm=cur.name,p=cur.path;
+  q.style.setProperty('--a',theme(nm));
+  $('mt').textContent=nm;$('kt').textContent=kind(nm);
+  setIcon($('lgw'),nm,()=>cur&&cur.name===nm);
+  img.classList.remove('in');img.removeAttribute('src');
+  const done=u=>{
+    if(!cur||cur.path!==p)return;
+    img.onload=()=>img.classList.add('in');
+    img.src=u;
+    if(img.complete&&img.naturalWidth)img.classList.add('in');
+  };
+  if(p.includes('-q.'))done(pub(p));
+  else autoCrop(p).then(u=>{done(u||pub(p));if(!u&&pin)toast('Auto-crop bhayena. Crop thichera aafai crop garnus.')});
+  (direct?$('side'):$('boxslot')).appendChild(q);
+  q.classList.remove('hide');
+  if(!direct)$('modal').classList.add('on');
+}
+function render(){
+  const direct=mode==='direct';
+  document.body.classList.toggle('direct',direct);
+  $('sub').textContent=direct?'Left bata chhannus, QR sidai dekhinchha.':'Paisa pathauna app chhannus, ani QR scan garnus.';
+  const l=$('list');l.innerHTML='';
+  if(direct){if(!cur&&items.length)cur=items[0];$('side').appendChild($('qv'))}
+  if(!items.length){l.innerHTML='<div class="empty">Kei QR chhaina.</div>';$('qv').classList.add('hide');return}
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='item'+(direct&&cur&&cur.id===it.id?' active':'');
+    b.style.setProperty('--a',theme(it.name));
+    b.innerHTML='<span class="ic"></span><span class="tx"><b></b><small></small></span>'+GO;
+    b.querySelector('b').textContent=it.name;
+    b.querySelector('small').textContent=kind(it.name);
+    setIcon(b.querySelector('.ic'),it.name,()=>b.isConnected);
+    b.onclick=()=>{
+      cur=it;
+      if(mode==='direct')document.querySelectorAll('.item').forEach(x=>x.classList.toggle('active',x===b));
+      showQr();
+    };
+    l.appendChild(b);
+  });
+  if(direct&&cur)showQr();else if(direct)$('qv').classList.add('hide');
+}
+function setEdit(on){
+  $('addp').classList.toggle('hide',!on);
+  $('setp').classList.toggle('hide',!on);
+  document.body.classList.toggle('edit',on);
+  $('toggle').textContent=on?'Edit band garnus':'Owner login';
+  if(!on)pin=null;
+}
+$('toggle').onclick=async()=>{
+  if(pin){setEdit(false);return}
+  const p=prompt('Passcode halnus:');
+  if(!p)return;
+  const {data,error}=await sb.rpc('check_pin',{p_pin:p});
+  if(error){alert('Error: '+error.message);return}
+  if(!data){alert('Passcode galat chha.');return}
+  pin=p;setEdit(true);
+};
+$('dmode').onchange=async()=>{
+  const want=$('dmode').checked?'direct':'popup';
+  const {error}=await sb.rpc('set_view_mode',{p_pin:pin,p_mode:want});
+  if(error){alert(error.message);$('dmode').checked=mode==='direct';return}
+  mode=want;cur=null;$('modal').classList.remove('on');render();
+};
+$('close').onclick=()=>$('modal').classList.remove('on');
+$('modal').onclick=e=>{if(e.target===$('modal'))$('modal').classList.remove('on')};
+$('del').onclick=async()=>{
+  if(!cur||!pin||!confirm('Delete garne?'))return;
+  const {error}=await sb.rpc('delete_qr',{p_pin:pin,p_id:cur.id});
+  if(error){alert(error.message);return}
+  cur=null;$('modal').classList.remove('on');load();
+};
+$('save').onclick=async()=>{
+  const n=$('name').value.trim(),f=$('file').files[0];
+  if(!pin){alert('Pahile passcode halnus.');return}
+  if(!n||!f){alert('Name ra QR image duitai chahinchha.');return}
+  const btn=$('save');btn.disabled=true;btn.textContent='Upload hudai chha...';
+  try{
+    const path=await uploadImg(f);
+    const r=await sb.rpc('add_qr',{p_pin:pin,p_name:n,p_path:path});
+    if(r.error)throw r.error;
+    $('name').value='';$('file').value='';load();
+  }catch(e){alert('Error: '+e.message)}
+  btn.disabled=false;btn.textContent='Save garnus';
+};
+$('rep').onclick=()=>{if(pin&&cur)$('repfile').click()};
+$('repfile').onchange=async()=>{
+  const f=$('repfile').files[0];$('repfile').value='';
+  if(!f||!pin||!cur)return;
+  const btn=$('rep');btn.disabled=true;btn.textContent='Upload hudai chha...';
+  try{
+    const path=await uploadImg(f);
+    const r=await sb.rpc('replace_qr',{p_pin:pin,p_id:cur.id,p_path:path});
+    if(r.error)throw r.error;
+    cur.path=path;load();
+  }catch(e){alert('Error: '+e.message)}
+  btn.disabled=false;btn.textContent='Pic replace';
+};
+
+/* manual crop (owner): tap/drag a square on the photo */
+let cx0=.5,cy0=.5,cs0=.6;
+function placeBox(){
+  const im=$('ci'),w=im.clientWidth,h=im.clientHeight,s=Math.min(w,h)*cs0;
+  const cx=Math.min(w-s/2,Math.max(s/2,cx0*w)),cy=Math.min(h-s/2,Math.max(s/2,cy0*h));
+  cx0=cx/w;cy0=cy/h;
+  const b=$('cb').style;b.width=b.height=s+'px';b.left=(cx-s/2)+'px';b.top=(cy-s/2)+'px';
+}
+$('crp').onclick=()=>{
+  if(!pin||!cur)return;
+  const im=$('ci');
+  im.onload=()=>{cx0=cy0=.5;cs0=$('cs').value/100;placeBox()};
+  im.crossOrigin='anonymous';im.src=pub(cur.path)+'?cors=1';
+  $('cm').classList.remove('hide');
+};
+const cw=$('cw');
+const mv=e=>{const r=$('ci').getBoundingClientRect();cx0=(e.clientX-r.left)/r.width;cy0=(e.clientY-r.top)/r.height;placeBox()};
+cw.onpointerdown=e=>{cw.setPointerCapture(e.pointerId);mv(e);cw.onpointermove=mv};
+cw.onpointerup=cw.onpointercancel=()=>{cw.onpointermove=null};
+$('cs').oninput=()=>{cs0=$('cs').value/100;placeBox()};
+$('cx').onclick=()=>$('cm').classList.add('hide');
+$('ck').onclick=async()=>{
+  const im=$('ci'),btn=$('ck');if(!pin||!cur||!im.naturalWidth)return;
+  btn.disabled=true;btn.textContent='Save hudai chha...';
+  try{
+    const k=im.naturalWidth/im.clientWidth,S=Math.min(im.clientWidth,im.clientHeight)*cs0*k;
+    const cx=cx0*im.naturalWidth,cy=cy0*im.naturalHeight;
+    const o=document.createElement('canvas');o.width=o.height=Math.min(900,Math.round(S));
+    const g=o.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,o.width,o.height);
+    g.drawImage(im,cx-S/2,cy-S/2,S,S,0,0,o.width,o.height);
+    const path=await putBlob(await toBlob(o),'-q');
+    const r=await sb.rpc('replace_qr',{p_pin:pin,p_id:cur.id,p_path:path});
+    if(r.error)throw r.error;
+    cur.path=path;$('cm').classList.add('hide');toast('Crop save bhayo');load();
+  }catch(e){alert('Error: '+e.message)}
+  btn.disabled=false;btn.textContent='Crop save';
+};
+
+/* splash: pixel QR that builds itself */
+(function(){
+  const g=$('pq');
+  for(let r=0;r<7;r++)for(let c=0;c<7;c++){
+    const fr=(r<3&&c<3)||(r<3&&c>3)||(r>3&&c<3);
+    const on=fr?!((r%4)===1&&(c%4)===1):((r*7+c)*37)%5<2;
+    const e=document.createElement(on?'b':'span');
+    if(on){e.style.animationDelay=(((r*7+c)*53)%10*.08+.2)+'s';if((r*7+c)%6===0)e.className='l'}
+    g.appendChild(e);
+  }
+})();
+
+(async()=>{
+  const wait=new Promise(r=>setTimeout(r,2100));
+  await Promise.all([loadMode().then(load),wait]);
+  $('splash').classList.add('gone');
+})();
+</script>
+</body>
+</html>
